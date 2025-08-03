@@ -1,0 +1,55 @@
+main {
+  max-width: 98vw;
+  margin: 1.5rem 1vw 0 1vw;
+  padding: 1rem 0.5rem;
+  border-radius: 7px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+}
+@media (max-width: 600px) {
+  main {
+    max-width: 99vw;
+    margin: 1rem 0.5vw 0 0.5vw;
+    padding: 0.7rem 0.2rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  #courseList li {
+    font-size: 1.05rem;
+    padding: 0.7rem;
+  }
+}
+#courseList {
+  list-style: none;
+  padding: 0;
+}
+#courseList li {
+  background: #f3f4f6;
+  color: #232b3a;
+  margin-bottom: 1.2rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.08rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  border: 1.5px solid #e5e7eb;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+body.dark-theme #courseList li {
+  background: #232b3a;
+  color: #e5e7eb;
+  border: 1.5px solid #374151;
+}
+
+body.light-theme #courseList li {
+  background: #fff;
+  color: #232b3a;
+  border: 1.5px solid #e5e7eb;
+}
+
+body.bee-theme #courseList li {
+  background: #fffbe7;
+  color: #b08900;
+  border: 2px solid #eab308;
+  box-shadow: 0 2px 8px #eab30822;
+}

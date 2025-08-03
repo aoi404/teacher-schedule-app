@@ -1,0 +1,144 @@
+/* Card style for choose-role.html */
+body {
+  background: linear-gradient(135deg, #e3f0ff 0%, #f7f9fb 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.choose-role-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.5rem;
+  margin: 80px auto 0 auto;
+  max-width: 900px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.role-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(25, 118, 210, 0.13), 0 1.5px 8px rgba(56, 142, 60, 0.08);
+  padding: 0 0 32px 0;
+  text-align: center;
+  width: 340px;
+  min-height: 430px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+  margin: 0 0 32px 0;
+  border: 1.5px solid #e3e8f0;
+  overflow: hidden;
+  position: relative;
+}
+.role-card:focus, .role-card:hover {
+  box-shadow: 0 16px 48px rgba(25, 118, 210, 0.18), 0 2px 12px rgba(56, 142, 60, 0.12);
+  transform: translateY(-6px) scale(1.035);
+  outline: 2px solid #1976d2;
+}
+.role-img {
+  max-width: 220px;
+  width: 90%;
+  height: auto;
+  margin: 32px auto 20px auto;
+  display: block;
+  border-radius: 16px;
+  background: #f5faff;
+  box-shadow: 0 2px 12px rgba(25, 118, 210, 0.07);
+  padding: 16px;
+}
+.role-card h3 {
+  margin: 18px 0 8px 0;
+  font-size: 1.6rem;
+  color: #1976d2;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.role-card.teacher-card h3 {
+  color: #388e3c;
+}
+.role-card p {
+  font-size: 1.08rem;
+  color: #444;
+  margin-bottom: 18px;
+  margin-top: 0;
+  min-height: 48px;
+  padding: 0 18px;
+}
+.student-btn, .teacher-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 14px 0;
+  width: 90%;
+  font-size: 1.13rem;
+  cursor: pointer;
+  margin-bottom: 0;
+  margin-top: 16px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+.student-btn {
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  color: #fff;
+}
+.student-btn:hover, .student-btn:focus {
+  background: linear-gradient(90deg, #1251a3 60%, #1976d2 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
+}
+.teacher-btn {
+  background: linear-gradient(90deg, #388e3c 60%, #66bb6a 100%);
+  color: #fff;
+}
+.teacher-btn:hover, .teacher-btn:focus {
+  background: linear-gradient(90deg, #256b28 60%, #388e3c 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px rgba(56, 142, 60, 0.13);
+}
+.back-btn {
+  display: inline-block;
+  margin: 36px 0 0 36px;
+  padding: 8px 16px 8px 12px;
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  color: #fff;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  z-index: 2;
+  max-width: 120px;
+  width: auto;
+  white-space: nowrap;
+}
+.back-btn:hover, .back-btn:focus {
+  background: linear-gradient(90deg, #1251a3 60%, #1976d2 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
+  text-decoration: none;
+}
+@media (max-width: 900px) {
+  .choose-role-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .role-card {
+    width: 95vw;
+    min-width: 0;
+    max-width: 350px;
+  }
+}
+@media (max-width: 600px) {
+  .back-btn {
+    margin: 14px 0 0 8px;
+    font-size: 0.95rem;
+    padding: 6px 10px 6px 8px;
+    max-width: 90px;
+  }
+}

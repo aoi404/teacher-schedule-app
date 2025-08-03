@@ -1,0 +1,63 @@
+body {
+  background: url('../assets/images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+main {
+  max-width: 600px;
+  margin: 4rem auto 0 auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  text-align: center;
+}
+
+main h2 {
+  color: #00539C;
+  margin-bottom: 2rem;
+}
+
+.portal-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.portal-links a {
+  background: #00539C;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.portal-links a:hover {
+  background: #003f73;
+}
+
+@media (max-width: 600px) {
+  main {
+    max-width: 98vw;
+    margin: 1.5rem 1vw 0 1vw;
+    padding: 1rem 0.5rem;
+    border-radius: 7px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  }
+  .portal-links {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .portal-links a {
+    width: 100%;
+    padding: 0.9rem 0;
+    font-size: 1.1rem;
+  }
+}

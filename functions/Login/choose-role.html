@@ -1,0 +1,29 @@
+<!-- Login Interface: Choose Role -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Manuel I. Santos Integrated School</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="choose-role.css">
+</head>
+<body>
+    <a href="../../index/index.html" class="back-btn">← Back to Home</a>
+    <div class="choose-role-wrapper">
+      <div class="role-card student-card" tabindex="0">
+        <img src="../../assets/images/student.png" alt="Student" class="role-img">
+        <h3>Student</h3>
+        <p>Login as a student to access your courses, grades, and more.</p>
+        <button class="student-btn" onclick="window.location.href='login.html?role=student'">I'm a Student</button>
+      </div>
+      <div class="role-card teacher-card" tabindex="0">
+        <img src="../../assets/images/teacher.png" alt="Teacher" class="role-img">
+        <h3>Teacher</h3>
+        <p>Login as a teacher to manage classes, students, and resources.</p>
+        <button class="teacher-btn" onclick="window.location.href='login.html?role=teacher'">I'm a Teacher</button>
+      </div>
+    </div>
+    <script src="choose-role.js"></script>
+</body>
+</html>

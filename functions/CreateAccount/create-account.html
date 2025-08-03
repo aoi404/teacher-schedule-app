@@ -1,0 +1,58 @@
+<!-- Create Account Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Manuel I. Santos Integrated School</title>
+    <link rel="stylesheet" href="create-account.css">
+</head>
+<body>
+    <a href="../../index/index.html" class="back-btn" aria-label="Home">
+      <span class="back-icon" aria-hidden="true">🏠</span>
+      <span class="back-text">Back to Home</span>
+    </a>
+    <section id="registerSection">
+        <div class="container">
+            <h2>Register</h2>
+            <label for="registerName">Full Name:</label>
+            <input type="text" id="registerName" placeholder="Enter Full Name" required>
+            <label for="registerRole">Role:</label>
+            <select id="registerRole">
+                <option value="" disabled selected>Select Role</option>
+                <option value="teacher">Teacher</option>
+                <option value="student">Student</option>
+            </select>
+            <!-- School Password for Teachers -->
+            <div id="schoolPasswordField" style="display: none;">
+                <label for="schoolPassword">School Password:</label>
+                <input type="password" id="schoolPassword" placeholder="Enter School Password">
+            </div>
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" placeholder="Enter Password" required>
+            <label for="registerPasswordConfirm">Confirm Password:</label>
+            <input type="password" id="registerPasswordConfirm" placeholder="Confirm Password" required>
+            <div class="button-container">
+                <button id="backToLogin">Back to Login</button>
+                <button id="registerSubmitButton">Submit</button>
+            </div>
+        </div>
+    </section>
+    <script src="create-account.js"></script>
+    <script>
+    // Hide text and show only icon on mobile
+    (function() {
+      function updateBackBtn() {
+        var backText = document.querySelector('.back-btn .back-text');
+        if (window.innerWidth <= 600) {
+          if (backText) backText.style.display = 'none';
+        } else {
+          if (backText) backText.style.display = '';
+        }
+      }
+      window.addEventListener('resize', updateBackBtn);
+      window.addEventListener('DOMContentLoaded', updateBackBtn);
+    })();
+    </script>
+</body>
+</html>

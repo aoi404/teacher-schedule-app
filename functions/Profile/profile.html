@@ -1,0 +1,37 @@
+<!-- Profile Section -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile</title>
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="../Header/header.css">
+  <link rel="stylesheet" href="../Footer/footer.css">
+  <link rel="stylesheet" href="../Settings/settings.css">
+</head>
+<body>
+  <div id="header"></div>
+  <main>
+    <div class="profile-header-bar">
+      <h2 class="profile-title">Teachers Profile</h2>
+      <div class="profile-search-bar">
+        <button id="toggleSearch" title="Search Profiles" class="search-icon-btn">
+          <span class="search-icon" aria-label="Search">🔍</span>
+        </button>
+        <form id="searchForm" class="profile-search-form">
+          <input type="text" id="searchName" placeholder="Name" class="search-input" />
+          <input type="text" id="searchGrade" placeholder="Grade Level" class="search-input" />
+          <input type="text" id="searchStatus" placeholder="Status" class="search-input" />
+          <button type="button" id="searchButton" class="search-btn">Search</button>
+          <button type="button" id="resetButton" class="reset-btn">Reset</button>
+        </form>
+      </div>
+    </div>
+    <div id="profileInfo"></div>
+  </main>
+  <div id="footer"></div>
+  <script src="profile.js"></script>
+  <script src="../Footer/footer.js"></script>
+</body>
+</html>

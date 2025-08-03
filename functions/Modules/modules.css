@@ -1,0 +1,77 @@
+/* modules.css - Simple card UI for modules */
+body {
+  background: #f5f6fa;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+.modules-main {
+  max-width: 900px;
+  margin: 2.5rem auto;
+  padding: 1.5rem;
+}
+.modules-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 2rem;
+}
+.modules-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+.module-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 2.2rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #232b3a;
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+  min-width: 180px;
+  text-align: center;
+}
+.module-card:hover {
+  box-shadow: 0 8px 32px #2563eb33;
+  background: #f0f4ff;
+  color: #2563eb;
+  transform: translateY(-4px) scale(1.04);
+}
+.module-view-content {
+  width: 100%;
+  min-height: 300px;
+  font-size: 1.1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  background: #fff;
+  color: #222;
+  box-shadow: none;
+}
+html.dark-theme .module-view-content {
+  background: #232b3a;
+  color: #f5f6fa;
+  border: 1.5px solid #2d3748;
+}
+html.bee-theme .module-view-content {
+  background: #fffbe7;
+  color: #222;
+  border: 1.5px solid #ffe066;
+}
+@media (max-width: 700px) {
+  .modules-card-list {
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+  }
+  .module-card {
+    width: 90vw;
+    min-width: 0;
+    padding: 1.2rem 0.5rem;
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,58 @@
+<!-- modules.html: List of module cards -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Modules</title>
+  <link rel="stylesheet" href="modules.css">
+  <link rel="stylesheet" href="../Header/header.css">
+  <link rel="stylesheet" href="../Settings/settings.css">
+  <script>
+    // Apply theme as early as possible
+    (function() {
+      try {
+        var theme = localStorage.getItem('siteTheme') || 'system';
+        var cl = document.documentElement.classList;
+        cl.remove('dark-theme', 'light-theme', 'bee-theme');
+        if (theme === 'dark') cl.add('dark-theme');
+        else if (theme === 'light') cl.add('light-theme');
+        else if (theme === 'bee') cl.add('bee-theme');
+      } catch(e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div id="header"></div>
+  <main class="modules-main">
+    <h2 class="modules-title">Available Modules</h2>
+    <div class="modules-card-list">
+      <div class="module-card" data-module="math">
+        <div class="module-title">Mathematics</div>
+      </div>
+      <div class="module-card" data-module="science">
+        <div class="module-title">Science</div>
+      </div>
+      <div class="module-card" data-module="english">
+        <div class="module-title">English</div>
+      </div>
+      <!-- Add more cards as needed -->
+    </div>
+  </main>
+  <script src="../Settings/settings.js"></script>
+  <script src="modules.js"></script>
+  <script>
+    // Load header
+    fetch('../Header/header.html').then(res => res.text()).then(data => {
+      document.getElementById('header').innerHTML = data;
+      const script = document.createElement('script');
+      script.src = '../Header/header.js';
+      script.onload = function() {
+        if (typeof applyTheme === 'function') applyTheme(localStorage.getItem('siteTheme') || 'system');
+        if (typeof updateLoginSettingsLinks === 'function') updateLoginSettingsLinks();
+      };
+      document.body.appendChild(script);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!-- Header Section -->
+<header>
+  <div class="header-content">
+    <img src="../../assets/images/logo.png" alt="School Logo" class="school-logo">
+    <h1>
+      <span class="school-full">Manuel I. Santos Integrated School</span>
+      <span class="school-short">MISIS</span>
+    </h1>
+    <div class="hamburger" id="hamburgerMenu" aria-label="Open navigation" tabindex="0">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <nav>
+    <a href="/functions/Dashboard/dashboard.html">Dashboard</a>
+    <a href="/functions/Profile/profile.html">Profile</a>
+    <a href="/functions/Courses/courses.html">Courses</a>
+    <a href="/functions/Login/choose-role.html" id="loginNavBtn">Login</a>
+  </nav>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="/functions/Dashboard/dashboard.html">Dashboard</a>
+    <a href="/functions/Profile/profile.html">Profile</a>
+    <a href="/functions/Courses/courses.html">Courses</a>
+    <a href="/functions/Login/choose-role.html" id="loginNavBtnMobile">Login</a>
+  </div>
+</header>
+<script>
+// Hamburger and mobile nav logic for dynamic header loading
+function setupHamburgerMenu() {
+  const hamburger = document.getElementById('hamburgerMenu');
+  const mobileNav = document.getElementById('mobileNav');
+  if (hamburger && mobileNav) {
+    function showMobileNav() {
+      mobileNav.classList.add('open');
+      mobileNav.style.display = 'flex';
+    }
+    function hideMobileNav() {
+      mobileNav.classList.remove('open');
+      mobileNav.style.display = 'none';
+    }
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mobileNav.classList.contains('open')) {
+        hideMobileNav();
+      } else {
+        showMobileNav();
+      }
+    });
+    // Hide menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileNav.contains(e.target) && !hamburger.contains(e.target)) {
+        hideMobileNav();
+      }
+    });
+    // Hide menu when a link is clicked
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hideMobileNav();
+      });
+    });
+  }
+}
+// Ensure the menu is hidden by default
+window.addEventListener('DOMContentLoaded', function() {
+  var mobileNav = document.getElementById('mobileNav');
+  if (mobileNav) {
+    mobileNav.classList.remove('open');
+    mobileNav.style.display = 'none';
+  }
+  // Update nav links based on login status
+  updateLoginSettingsLinks();
+  setupHamburgerMenu();
+});
+
+// Listen for login/logout changes across tabs and update nav
+window.addEventListener('storage', updateLoginSettingsLinks);
+
+function updateLoginSettingsLinks() {
+  var isLoggedIn = !!localStorage.getItem('currentUserId');
+  var navLinks = document.querySelectorAll('nav a, .mobile-nav a');
+  navLinks.forEach(function(link) {
+    if (link.textContent.trim() === 'Settings') {
+      link.style.display = isLoggedIn ? '' : 'none';
+    }
+    if (link.textContent.trim() === 'Login') {
+      link.style.display = isLoggedIn ? 'none' : '';
+    }
+  });
+}
+</script>

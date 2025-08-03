@@ -1,0 +1,64 @@
+<!-- Login Page for Teachers and Students -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Manuel I. Santos Integrated School</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <a href="../../index/index.html" class="back-btn" aria-label="Home">
+      <span class="back-icon" aria-hidden="true">🏠</span>
+      <span class="back-text">Back to Home</span>
+    </a>
+    <div class="container login-container">
+        <!-- Teacher Login -->
+        <div id="teacherLoginForm" class="hidden">
+            <h3>Teacher Login</h3>
+            <label for="teacherID">Unique ID:</label>
+            <div style="position: relative;">
+                <input type="text" id="teacherID" maxlength="6" placeholder="Enter Unique ID">
+            </div>
+            <label for="teacherPassword">Password:</label>
+            <div style="position: relative;">
+                <input type="password" id="teacherPassword" placeholder="Enter Password">
+            </div>
+            <button id="teacherSubmitButton">Login</button>
+            <p class="register-link">
+                Don’t have an account yet? <a href="../CreateAccount/create-account.html" id="goToRegister">Register</a>
+            </p>
+        </div>
+        <!-- Student Login -->
+        <div id="studentLoginForm">
+            <h3>Student Login</h3>
+            <label for="studentID">Unique ID:</label>
+            <input type="text" id="studentID" maxlength="6" placeholder="Enter Unique ID">
+            <label for="studentPassword">Password:</label>
+            <div style="position: relative;">
+                <input type="password" id="studentPassword" placeholder="Enter Password">
+            </div>
+            <button id="studentSubmitButton">Login</button>
+            <p class="register-link">
+                Don’t have an account yet? <a href="../CreateAccount/create-account.html" id="studentRegisterLink">Register</a>
+            </p>
+        </div>
+    </div>
+    <script src="login.js"></script>
+    <script>
+    // Hide text and show only icon on mobile
+    (function() {
+      function updateBackBtn() {
+        var backText = document.querySelector('.back-btn .back-text');
+        if (window.innerWidth <= 600) {
+          if (backText) backText.style.display = 'none';
+        } else {
+          if (backText) backText.style.display = '';
+        }
+      }
+      window.addEventListener('resize', updateBackBtn);
+      window.addEventListener('DOMContentLoaded', updateBackBtn);
+    })();
+    </script>
+</body>
+</html>
