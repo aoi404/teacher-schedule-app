@@ -80,6 +80,14 @@ app.post('/log/register', async (req, res) => {
              ON CONFLICT (user_id) DO UPDATE SET name = $2, role = $3, password = $4`,
             [userId, name, role, password]
         );
+        // If registering as a teacher, also create a blank teacher profile if not exists
+        if (role === 'teacher') {
+            await pool.query(
+                `INSERT INTO teachers (user_id, profile) VALUES ($1, $2)
+                 ON CONFLICT (user_id) DO NOTHING`,
+                [userId, JSON.stringify({ userId, name, role })]
+            );
+        }
         logEvent('REGISTER', userId, role, name);
         logRegistration({ userId, role, name, password });
         res.json({ status: 'ok' });
