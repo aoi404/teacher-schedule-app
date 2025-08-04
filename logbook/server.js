@@ -16,12 +16,12 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve static files from the root and subfolders
-app.use(express.static(path.join(__dirname, '..')));
 
-// Root route serves the main index.html
+// Use absolute project root for static files and index.html
+const projectRoot = path.resolve(__dirname, '..');
+app.use(express.static(projectRoot));
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../index/index.html'));
+  res.sendFile(path.join(projectRoot, 'index', 'index.html'));
 });
 
 const SCHOOL_PASSWORD = process.env.SCHOOL_PASSWORD || 'help'; // Set via environment variable or fallback
