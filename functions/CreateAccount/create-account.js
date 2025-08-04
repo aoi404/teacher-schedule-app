@@ -64,29 +64,34 @@ window.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        // Prepare registration payload
-        let payload = { name, role, password };
+        // Generate a 6-digit userId
+        const userId = Math.floor(100000 + Math.random() * 900000).toString();
+        let payload = { userId, name, role, password };
         if (role === 'teacher') {
             payload.schoolPassword = document.getElementById('schoolPassword').value.trim();
         }
         try {
+            console.debug('[DEBUG] Registration payload:', payload);
             const resp = await fetch(`${API_BASE}/log/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             const data = await resp.json();
+            console.debug('[DEBUG] Registration response:', resp, data);
             if (!resp.ok || data.error) {
                 showError(data.error || 'Registration failed.');
                 return;
             }
-            // Registration successful, redirect to login
+            // Registration successful, autofill login form with new ID
+            localStorage.setItem('autofillLoginID', userId);
             if (role === 'teacher') {
                 window.location.href = '../Login/login.html?role=teacher';
             } else {
                 window.location.href = '../Login/login.html?role=student';
             }
         } catch (err) {
+            console.error('[DEBUG] Registration error:', err);
             showError('Network or server error. Please try again.');
         }
     });
