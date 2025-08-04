@@ -164,11 +164,18 @@ app.post('/teacher-profile', (req, res) => {
 
 // Get all teacher profiles from teachers.json
 app.get('/teacher-profiles', (req, res) => {
-    if (!fs.existsSync(TEACHERS_JSON_PATH)) return res.json([]);
+    if (!fs.existsSync(TEACHERS_JSON_PATH)) {
+        // Auto-create empty file if missing
+        fs.writeFileSync(TEACHERS_JSON_PATH, '{}');
+        return res.json([]);
+    }
     try {
         const teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
         res.json(Object.values(teachers));
     } catch (e) {
+        console.error('Error reading teachers.json:', e);
+        // Try to auto-fix by resetting file
+        fs.writeFileSync(TEACHERS_JSON_PATH, '{}');
         res.status(500).json({ error: 'Failed to read profiles' });
     }
 });
