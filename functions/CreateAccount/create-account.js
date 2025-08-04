@@ -2,21 +2,9 @@
 // Determine API base URL for backend (works for localhost and LAN)
 const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:3001'
-  : `http://${window.location.hostname}:3001`;
+  : window.location.origin;
 
-function getUsers() {
-    return JSON.parse(localStorage.getItem("users")) || {};
-}
-function saveUsers(users) {
-    localStorage.setItem("users", JSON.stringify(users));
-}
-function logRegistrationToServer(userId, role, name, password) {
-    fetch(`${API_BASE}/log/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, role, name, password })
-    });
-}
+// Remove localStorage and logRegistrationToServer, use backend registration only
 window.addEventListener('DOMContentLoaded', function() {
     // Add error message container if not present
     let errorDiv = document.getElementById('registerErrorMsg');
@@ -76,19 +64,30 @@ window.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        const users = getUsers();
-        const id = Math.floor(100000 + Math.random() * 900000).toString();
-        users[id] = { name, role, password, status: 'Not Available', note: '' };
-        saveUsers(users);
-        // Log registration to backend
-        logRegistrationToServer(id, role, name, password);
-        // Autofill the login form with the new ID and redirect to the correct login form
-        localStorage.setItem('autofillLoginID', id);
-        // Remove alert and redirect immediately for mobile compatibility
+        // Prepare registration payload
+        let payload = { name, role, password };
         if (role === 'teacher') {
-            window.location.href = '../Login/login.html?role=teacher';
-        } else {
-            window.location.href = '../Login/login.html?role=student';
+            payload.schoolPassword = document.getElementById('schoolPassword').value.trim();
+        }
+        try {
+            const resp = await fetch(`${API_BASE}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            if (!resp.ok || !data.success) {
+                showError(data.message || 'Registration failed.');
+                return;
+            }
+            // Registration successful, redirect to login
+            if (role === 'teacher') {
+                window.location.href = '../Login/login.html?role=teacher';
+            } else {
+                window.location.href = '../Login/login.html?role=student';
+            }
+        } catch (err) {
+            showError('Network or server error. Please try again.');
         }
     });
     document.getElementById('backToLogin').onclick = function(e) {
