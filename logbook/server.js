@@ -9,10 +9,20 @@ const multer = require('multer');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3001;
+
+const PORT = process.env.PORT || 3001;
+
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files from the root and subfolders
+app.use(express.static(path.join(__dirname, '..')));
+
+// Root route serves the main index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../index/index.html'));
+});
 
 const SCHOOL_PASSWORD = process.env.SCHOOL_PASSWORD || 'help'; // Set via environment variable or fallback
 
