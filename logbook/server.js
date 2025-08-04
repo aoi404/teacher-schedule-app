@@ -66,33 +66,30 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Path to accounts.json file for all users
-const ACCOUNTS_JSON_PATH = path.join(__dirname, 'user accounts', 'accounts.json');
 
-// Save or update user in accounts.json
-function saveAccount({ userId, name, role, password }) {
-    let accounts = {};
-    if (fs.existsSync(ACCOUNTS_JSON_PATH)) {
-        try {
-            accounts = JSON.parse(fs.readFileSync(ACCOUNTS_JSON_PATH, 'utf8'));
-        } catch (e) {
-            accounts = {};
-        }
-    }
-    accounts[userId] = { userId, name, role, password };
-    fs.writeFileSync(ACCOUNTS_JSON_PATH, JSON.stringify(accounts, null, 2));
-}
 
-// Log registration event
-app.post('/log/register', (req, res) => {
+// Log registration event (now uses PostgreSQL)
+app.post('/log/register', async (req, res) => {
     const { userId, role, name, password } = req.body;
-    logEvent('REGISTER', userId, role, name);
-    logRegistration({ userId, role, name, password });
-    saveAccount({ userId, name, role, password });
-    res.json({ status: 'ok' });
+    if (!userId || !role || !name || !password) {
+        return res.status(400).json({ error: 'Missing fields' });
+    }
+    try {
+        await pool.query(
+            `INSERT INTO accounts (user_id, name, role, password) VALUES ($1, $2, $3, $4)
+             ON CONFLICT (user_id) DO UPDATE SET name = $2, role = $3, password = $4`,
+            [userId, name, role, password]
+        );
+        logEvent('REGISTER', userId, role, name);
+        logRegistration({ userId, role, name, password });
+        res.json({ status: 'ok' });
+    } catch (e) {
+        console.error('DB error registering account:', e);
+        res.status(500).json({ error: 'Failed to register' });
+    }
 });
 
-// Log login event
+// Log login event (no DB action, just logs)
 app.post('/log/login', (req, res) => {
     const { userId, role, name } = req.body;
     logEvent('LOGIN', userId, role, name);
@@ -229,51 +226,36 @@ app.get('/teacher-profile/:id', async (req, res) => {
     // }
 });
 
-// Login endpoint for cross-device login
-app.post('/login', (req, res) => {
+// Login endpoint for cross-device login (now uses PostgreSQL)
+app.post('/login', async (req, res) => {
     const { userId, password } = req.body;
-    console.log('LOGIN ATTEMPT:', userId, password, 'ACCOUNTS_JSON_PATH:', ACCOUNTS_JSON_PATH);
     if (!userId || !password) return res.status(400).json({ error: 'Missing userId or password' });
-    let accounts = {};
-    if (fs.existsSync(ACCOUNTS_JSON_PATH)) {
-        try {
-            accounts = JSON.parse(fs.readFileSync(ACCOUNTS_JSON_PATH, 'utf8'));
-        } catch (e) {
-            return res.status(500).json({ error: 'Failed to read accounts' });
-        }
+    try {
+        const result = await pool.query('SELECT * FROM accounts WHERE user_id = $1', [userId]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const user = result.rows[0];
+        if (user.password !== password) return res.status(401).json({ error: 'Incorrect password' });
+        res.json({ status: 'ok', user });
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to login' });
     }
-    const user = accounts[userId];
-    if (!user) {
-        console.log('User not found in accounts.json:', userId);
-        return res.status(404).json({ error: 'User not found' });
-    }
-    if (user.password !== password) {
-        console.log('Incorrect password for user:', userId);
-        return res.status(401).json({ error: 'Incorrect password' });
-    }
-    res.json({ status: 'ok', user });
 });
 
-// Update password in accounts.json
-app.post('/update-password', (req, res) => {
+// Update password in accounts table (PostgreSQL)
+app.post('/update-password', async (req, res) => {
     const { userId, newPassword } = req.body;
     if (!userId || !newPassword) {
         return res.status(400).json({ error: 'Missing userId or newPassword' });
     }
-    let accounts = {};
-    if (fs.existsSync(ACCOUNTS_JSON_PATH)) {
-        try {
-            accounts = JSON.parse(fs.readFileSync(ACCOUNTS_JSON_PATH, 'utf8'));
-        } catch (e) {
-            return res.status(500).json({ error: 'Failed to read accounts' });
+    try {
+        const result = await pool.query('UPDATE accounts SET password = $1 WHERE user_id = $2', [newPassword, userId]);
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'User not found' });
         }
+        res.json({ status: 'ok' });
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to update password' });
     }
-    if (!accounts[userId]) {
-        return res.status(404).json({ error: 'User not found' });
-    }
-    accounts[userId].password = newPassword;
-    fs.writeFileSync(ACCOUNTS_JSON_PATH, JSON.stringify(accounts, null, 2));
-    res.json({ status: 'ok' });
 });
 
 // --- SCHEDULE API ---
