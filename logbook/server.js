@@ -7,12 +7,37 @@ const path = require('path');
 const { logEvent, logSupport, logPasswordChange, logRegistration, logTeacherProfile } = require('./logger');
 const multer = require('multer');
 const fs = require('fs');
+const { Pool } = require('pg');
+// --- PostgreSQL connection setup ---
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL, // Set this in Render dashboard
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
+// Helper: Ensure teachers table exists
+async function ensureTeachersTable() {
+    await pool.query(`CREATE TABLE IF NOT EXISTS teachers (
+        user_id VARCHAR(255) PRIMARY KEY,
+        profile JSONB NOT NULL
+    )`);
+}
+ensureTeachersTable().catch(console.error);
 
 const app = express();
-const PORT = 3001;
+
+const PORT = process.env.PORT || 3001;
+
 
 app.use(cors());
 app.use(bodyParser.json());
+
+
+// Use absolute project root for static files and index.html
+const projectRoot = path.resolve(__dirname, '..');
+app.use(express.static(projectRoot));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(projectRoot, 'index', 'index.html'));
+});
 
 const SCHOOL_PASSWORD = process.env.SCHOOL_PASSWORD || 'help'; // Set via environment variable or fallback
 
@@ -132,48 +157,76 @@ app.post('/log/teacher-profile', (req, res) => {
 // Path to single teachers.json file
 const TEACHERS_JSON_PATH = path.join(TEACHER_PROFILES_DIR, 'teachers.json');
 
-// Save or update teacher profile in teachers.json
-app.post('/teacher-profile', (req, res) => {
+// Save or update teacher profile in PostgreSQL
+app.post('/teacher-profile', async (req, res) => {
     const { userId, ...profile } = req.body;
     if (!userId) {
         return res.status(400).json({ error: 'userId is required' });
     }
-    let teachers = {};
-    if (fs.existsSync(TEACHERS_JSON_PATH)) {
-        try {
-            teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
-        } catch (e) {
-            // If file is corrupted, start fresh
-            teachers = {};
-        }
-    }
-    teachers[userId] = { userId, ...profile };
-    fs.writeFileSync(TEACHERS_JSON_PATH, JSON.stringify(teachers, null, 2));
-    res.json({ status: 'ok' });
-});
-
-// Get all teacher profiles from teachers.json
-app.get('/teacher-profiles', (req, res) => {
-    if (!fs.existsSync(TEACHERS_JSON_PATH)) return res.json([]);
     try {
-        const teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
-        res.json(Object.values(teachers));
+        await pool.query(
+            `INSERT INTO teachers (user_id, profile) VALUES ($1, $2)
+             ON CONFLICT (user_id) DO UPDATE SET profile = EXCLUDED.profile`,
+            [userId, JSON.stringify({ userId, ...profile })]
+        );
+        res.json({ status: 'ok' });
     } catch (e) {
-        res.status(500).json({ error: 'Failed to read profiles' });
+        console.error('DB error saving teacher profile:', e);
+        res.status(500).json({ error: 'Failed to save profile' });
     }
+    // --- File fallback (commented) ---
+    // let teachers = {};
+    // if (fs.existsSync(TEACHERS_JSON_PATH)) {
+    //     try {
+    //         teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
+    //     } catch (e) { teachers = {}; }
+    // }
+    // teachers[userId] = { userId, ...profile };
+    // fs.writeFileSync(TEACHERS_JSON_PATH, JSON.stringify(teachers, null, 2));
 });
 
-// Get a single teacher profile by ID
-app.get('/teacher-profile/:id', (req, res) => {
-    const id = req.params.id;
-    if (!fs.existsSync(TEACHERS_JSON_PATH)) return res.status(404).json({ error: 'Not found' });
+// Get all teacher profiles from PostgreSQL
+app.get('/teacher-profiles', async (req, res) => {
     try {
-        const teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
-        if (!teachers[id]) return res.status(404).json({ error: 'Not found' });
-        res.json(teachers[id]);
+        const result = await pool.query('SELECT profile FROM teachers');
+        res.json(result.rows.map(r => r.profile));
+    } catch (e) {
+        console.error('DB error loading teacher profiles:', e);
+        res.status(500).json({ error: 'Failed to load profiles' });
+    }
+    // --- File fallback (commented) ---
+    // if (!fs.existsSync(TEACHERS_JSON_PATH)) {
+    //     fs.writeFileSync(TEACHERS_JSON_PATH, '{}');
+    //     return res.json([]);
+    // }
+    // try {
+    //     const teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
+    //     res.json(Object.values(teachers));
+    // } catch (e) {
+    //     fs.writeFileSync(TEACHERS_JSON_PATH, '{}');
+    //     res.status(500).json({ error: 'Failed to read profiles' });
+    // }
+});
+
+// Get a single teacher profile by ID from PostgreSQL
+app.get('/teacher-profile/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const result = await pool.query('SELECT profile FROM teachers WHERE user_id = $1', [id]);
+        if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' });
+        res.json(result.rows[0].profile);
     } catch (e) {
         res.status(500).json({ error: 'Failed to read profile' });
     }
+    // --- File fallback (commented) ---
+    // if (!fs.existsSync(TEACHERS_JSON_PATH)) return res.status(404).json({ error: 'Not found' });
+    // try {
+    //     const teachers = JSON.parse(fs.readFileSync(TEACHERS_JSON_PATH, 'utf8'));
+    //     if (!teachers[id]) return res.status(404).json({ error: 'Not found' });
+    //     res.json(teachers[id]);
+    // } catch (e) {
+    //     res.status(500).json({ error: 'Failed to read profile' });
+    // }
 });
 
 // Login endpoint for cross-device login
