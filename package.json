@@ -7,10 +7,6 @@
     "start": "node logbook/server.js"
   },
   "dependencies": {
-    "multer": "^2.0.0",
-    "pg": "^8.16.3"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "multer": "^2.0.0"
+  }
 }
