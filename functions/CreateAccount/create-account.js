@@ -70,14 +70,14 @@ window.addEventListener('DOMContentLoaded', function() {
             payload.schoolPassword = document.getElementById('schoolPassword').value.trim();
         }
         try {
-            const resp = await fetch(`${API_BASE}/register`, {
+            const resp = await fetch(`${API_BASE}/log/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             const data = await resp.json();
-            if (!resp.ok || !data.success) {
-                showError(data.message || 'Registration failed.');
+            if (!resp.ok || data.error) {
+                showError(data.error || 'Registration failed.');
                 return;
             }
             // Registration successful, redirect to login
