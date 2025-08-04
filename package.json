@@ -1,5 +1,15 @@
 {
+  "name": "teacher-schedule-app",
+  "version": "1.0.0",
+  "description": "Teacher schedule management app",
+  "main": "logbook/server.js",
+  "scripts": {
+    "start": "node logbook/server.js"
+  },
   "dependencies": {
     "multer": "^2.0.0"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
